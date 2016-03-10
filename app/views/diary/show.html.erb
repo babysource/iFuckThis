@@ -1,0 +1,68 @@
+<div id="diary" data-role="page" data-theme="b">
+  <div data-theme="b" data-role="header">
+    <a data-role="button" href="/index/show" data-icon="search" data-ajax="false">
+      Calendar
+    </a>
+    <h1>
+      <%= @today %>
+    </h1>
+    <a data-role="button" href="/login/exit" data-icon="home" data-ajax="false">
+      Logout
+    </a>
+  </div>
+  <div data-role="content">
+    <div class="ui-body ui-body-e">
+      <input type="text" id="thing" data-theme="c" placeholder="What'd you get done today?" value="" />
+    </div>
+    <ul data-role="listview" data-divider-theme="b" data-inset="true">
+      <li data-role="list-divider" role="heading">
+        <%= session[:iFuckUser].name %> - Daily Dones：
+      </li>
+      <%
+         @thing.each do |task|
+      %>
+        <li data-theme="c">
+            <a href="" data-rel="dialog">
+                <img src="/themes/images/star.png" class="ui-li-icon" />
+                <%= task.done %>
+                <a href="/diary/wipe?clear=<%= task.id %>" data-icon="minus" data-ajax="false">删 除</a>
+            </a>
+        </li>
+      <%
+         end
+      %>
+    </ul>
+  </div>
+  <script>
+      $('#diary').bind('pageshow', function() {
+          var insert = function() {
+              var done = $('#thing').val();
+              if (!(done == '')) {
+                  $.mobile.showPageLoadingMsg();
+                  $.ajax({
+                      type: 'GET',
+                      url: '/diary/save',
+                      data: {
+                          date: '<%= @today %>',
+                          done: done
+                      },
+                      dataType: 'json',
+                      success: function(data){
+                          $.mobile.hidePageLoadingMsg();
+                          if ((data || 0).rsp == 1) {
+                              window.location.reload();
+                          }
+                      }
+                  });
+              }
+          };
+          $("#thing").focus();
+          $("#thing").blur(insert);
+          $('#diary').keydown(function(e){
+              if (e.keyCode == 13) {
+                  insert();
+              }
+          });
+      });
+  </script>
+</div>

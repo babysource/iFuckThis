@@ -1,0 +1,88 @@
+<div id="login" data-role="page" data-theme="b">
+  <style>
+      .ui-body-space{
+          margin-top: 3px;
+      }
+  </style>
+  <div data-theme="b" data-role="header">
+    <h1>
+      iFuckThis
+    </h1>
+  </div>
+  <div data-role="content">
+    <div class="ui-body ui-body-b">
+      <fieldset data-role="controlgroup">
+        <label for="username">
+          UserName:
+        </label>
+        <input id="username" placeholder="Username" value="" type="text" />
+      </fieldset>
+      <fieldset data-role="controlgroup">
+        <label for="password">
+          PassWord:
+        </label>
+        <input id="password" placeholder="Password" value="" type="password" />
+      </fieldset>
+    </div>
+    <div class="ui-body ui-body-b ui-body-space">
+      <div class="ui-grid-a">
+        <div class="ui-block-a">
+          <a id="resetBtn" data-role="button" href="javascript:void(0);" data-icon="refresh">
+            Reset
+          </a>
+        </div>
+        <div class="ui-block-b">
+          <a id="loginBtn" data-role="button" href="javascript:void(0);" data-icon="check">
+            Login
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+        $('#login').bind('pageshow', function() {
+            var login = function() {
+                var username = $('#username').val();
+                if (username == '') {
+                    alert('UserName Is Empty.');
+                    return;
+                }
+                var password = $('#password').val();
+                if (password == '') {
+                    alert('PassWord Is Empty.');
+                    return;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/join',
+                    data: {
+                        user: username,
+                        pass: password
+                    },
+                    dataType: 'json',
+                    error: function(){
+                        alert('Login Error.');
+                    },
+                    success: function(data){
+                        if ((data || 0).rsp == 1) {
+                            $.mobile.changePage('/diary/show');
+                        } else {
+                            alert('Username Or Password Not Exist.');
+                        }
+                    }
+                });
+            };
+            $('#username').focus();
+            $("#loginBtn").click(login);
+            $("#resetBtn").click(function() {
+                $('#username').val('');
+                $('#password').val('');
+            });
+            $('#login').keydown(function(e){
+                if (e.keyCode == 13) {
+                    login();
+                }
+            });
+        });
+    </script>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div id="index" data-role="page" data-theme="b">
+  <style>
+      .fc-widget-content{
+          cursor: pointer;
+      }
+      .fc-event-done{
+          border: 0;
+          height: 32px;
+          background: transparent url('/themes/images/save.png') no-repeat center;
+      }
+  </style>
+  <div data-theme="b" data-role="header">
+    <a data-role="button" href="/diary/show" data-icon="plus" data-ajax="false">
+      Today
+    </a>
+    <h1>
+      iFuckThis
+    </h1>
+    <a data-role="button" href="/login/exit" data-icon="home" data-ajax="false">
+      Logout
+    </a>
+  </div>
+  <div data-role="content" data-theme="e">
+    <div id='calendar'></div>
+  </div>
+  <script>
+      $('#index').bind('pageshow', function() {
+          $('#calendar').html('');
+          $('#calendar').fullCalendar({
+              editable: false,
+              header: {
+                  left: 'prev,next',
+                  center: 'title',
+                  right: ''
+              },
+              dayClick: function(date) {
+                  $.mobile.changePage('/diary/show/' + $.fullCalendar.formatDate(date,'yyyy-MM-dd'));
+              },
+              events: {
+                  type: 'GET',
+                  url: '/index/fill'
+              },
+              eventRender: function(event, title) {
+                  title.html('');
+              }
+          });
+      });
+  </script>
+</div>
